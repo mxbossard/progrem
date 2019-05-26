@@ -1,6 +1,6 @@
 
 var titre = document.querySelector('.titre');
-titre.innerHTML = 'Un coeur.';
+titre.innerHTML = 'Un coeur battant.';
 
 var ecran_largeur = window.innerWidth;
 var ecran_hauteur = window.innerHeight;
@@ -18,7 +18,7 @@ var IMAGE_HAUTEUR = 370;
 var context = canvas.getContext('2d');
 context.fillStyle = 'rgb(255, 102, 153)'; // Couleur rose #FF6699
 
-function drawCartesianTiles(tuile_taille, x_nombre_tuiles, y_nombre_tuiles, x_min, x_max, y_min, y_max, cartesian_painter, timer = null) {
+function drawCartesianTiles(tuile_taille, x_nombre_tuiles, y_nombre_tuiles, x_min, x_max, y_min, y_max, cartesian_painter) {
     var cadre_largeur = x_nombre_tuiles * tuile_taille;
     var cadre_hauteur = y_nombre_tuiles * tuile_taille;
 
@@ -42,10 +42,6 @@ function drawCartesianTiles(tuile_taille, x_nombre_tuiles, y_nombre_tuiles, x_mi
             var l = cadre_hauteur - Math.round((y - y_resolution / 2 - y_min) / (y_max - y_min) * cadre_hauteur / tuile_taille) * tuile_taille;
             //console.log('drawCartesianTiles: (x, y) => (c, l)', x, y, c, l);
             context.fillRect(c, l, tuile_taille, tuile_taille);
-
-            if (timer) {
-
-            }
         }
     }
 }
@@ -59,10 +55,11 @@ function eugeneBeutelCoeurCartesianGrapher(context, x, y, cadre_largeur, cadre_h
     if ( coeur_eugene_beutel_filled(x, y, egalite_precision) ) {
         context.fillStyle = 'rgb(255, 102, 153)'; // Couleur rose #FF6699
     } else {
-        context.fillStyle = 'rgb(150, 255, 255)'; // Couleur blanche
+        context.fillStyle = 'rgb(255, 255, 255)'; // Couleur blanche
     }
 }
 
+var k = 0;
 var previousRepaintTime = 0;
 
 function step(timestamp) {
@@ -71,7 +68,9 @@ function step(timestamp) {
 
         var x_tuile_nombre = Math.floor(IMAGE_LARGEUR / TUILE_TAILLE / 2) * 2 + 1;
         var y_tuile_nombre = Math.floor(IMAGE_HAUTEUR / TUILE_TAILLE / 2) * 2 + 1;
-        drawCartesianTiles(TUILE_TAILLE, x_tuile_nombre, y_tuile_nombre, - 1.3, 1.3, - 1.3, 1.3, eugeneBeutelCoeurCartesianGrapher);
+        var zoom = k % 4 / 8;
+        drawCartesianTiles(TUILE_TAILLE, x_tuile_nombre, y_tuile_nombre, - 1.3 - zoom, 1.3 + zoom, - 1.3 - zoom, 1.3 + zoom, eugeneBeutelCoeurCartesianGrapher);
+        k ++;
     }
     window.requestAnimationFrame(step);
 }
